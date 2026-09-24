@@ -14,6 +14,7 @@ import PromiseWall from './components/PromiseWall'
 import Excerpt from './components/Excerpt'
 import CTA from './components/CTA'
 import Newsletter from './components/Newsletter'
+import BurntLetterEasterEgg from './components/BurntLetterEasterEgg'
 import Footer from './components/Footer'
 import CursorAtmosphere from './components/CursorAtmosphere'
 
@@ -46,6 +47,7 @@ function App() {
         <Excerpt />
         <CTA />
         <Newsletter />
+        <BurntLetterEasterEgg />
       </main>
 
       {/* Footer */}
