@@ -63,6 +63,9 @@ const CTA = () => {
               >
                 Buy the Book
               </button>
+              <span className="mt-2 text-[10px] text-[#e8e0d4]/40" style={{ fontFamily: '"Inter", sans-serif' }}>
+                Coming {bookConfig.publicationDisplay || 'December 2027'}
+              </span>
             </div>
           </div>
         </motion.div>

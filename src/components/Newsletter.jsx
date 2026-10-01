@@ -12,6 +12,7 @@ const Newsletter = () => {
   const [email, setEmail] = useState('');
   const [selectedEditions, setSelectedEditions] = useState(['paperback', 'signed']);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.4 });
 
@@ -28,7 +29,11 @@ const Newsletter = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email) {
-      setSubmitted(true);
+      setIsSubmitting(true);
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setSubmitted(true);
+      }, 1000);
     }
   };
 
@@ -119,10 +124,13 @@ const Newsletter = () => {
                 />
                 <button
                   type="submit"
-                  className="px-8 py-3.5 bg-[#c42b2b] hover:bg-[#a82424] text-[#f5f0e8] uppercase tracking-[0.15em] text-xs font-medium transition-all duration-300 hover:shadow-[0_0_25px_rgba(196,43,43,0.35)] shrink-0 rounded-sm"
+                  disabled={isSubmitting}
+                  className={`px-8 py-3.5 bg-[#c42b2b] hover:bg-[#a82424] text-[#f5f0e8] uppercase tracking-[0.15em] text-xs font-medium transition-all duration-300 hover:shadow-[0_0_25px_rgba(196,43,43,0.35)] shrink-0 rounded-sm ${
+                    isSubmitting ? 'opacity-70 animate-pulse cursor-not-allowed' : ''
+                  }`}
                   style={{ fontFamily: '"Inter", sans-serif' }}
                 >
-                  Notify Me
+                  {isSubmitting ? 'Subscribing...' : 'Notify Me'}
                 </button>
               </div>
 

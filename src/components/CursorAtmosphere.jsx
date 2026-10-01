@@ -48,26 +48,32 @@ export default function CursorAtmosphere() {
     <div className="pointer-events-none fixed inset-0 z-30 overflow-hidden" aria-hidden="true">
       {/* Primary crimson aura following cursor */}
       <motion.div
-        className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
+        className="absolute top-0 left-0 rounded-full"
         style={{
-          left: cursorX,
-          top: cursorY,
+          x: cursorX,
+          y: cursorY,
+          marginLeft: '-260px',
+          marginTop: '-260px',
           width: '520px',
           height: '520px',
           background: 'radial-gradient(circle, rgba(196, 43, 43, 0.075) 0%, rgba(139, 34, 82, 0.035) 45%, transparent 70%)',
           filter: 'blur(30px)',
+          willChange: 'transform',
         }}
       />
 
       {/* Tiny focal pinpoint glow */}
       <motion.div
-        className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
+        className="absolute top-0 left-0 rounded-full"
         style={{
-          left: cursorX,
-          top: cursorY,
+          x: cursorX,
+          y: cursorY,
+          marginLeft: '-90px',
+          marginTop: '-90px',
           width: '180px',
           height: '180px',
           background: 'radial-gradient(circle, rgba(232, 224, 212, 0.04) 0%, transparent 60%)',
+          willChange: 'transform',
         }}
       />
     </div>

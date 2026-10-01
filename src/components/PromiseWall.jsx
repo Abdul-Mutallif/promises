@@ -236,7 +236,7 @@ export default function PromiseWall() {
                     }`}
                     title={isWitnessed ? 'You have witnessed this whisper' : 'Witness this whisper'}
                   >
-                    <span className="text-xs" aria-hidden="true">🕯️</span>
+                    <span className="text-xs" aria-hidden="true">✦</span>
                     <span className="text-[10px] tracking-wider" style={{ fontFamily: '"Inter", sans-serif' }}>
                       {item.witnesses}
                     </span>

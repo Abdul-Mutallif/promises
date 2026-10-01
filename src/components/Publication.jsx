@@ -66,10 +66,6 @@ export default function Publication() {
             >
               Publication Details
             </h2>
-            <div className="inline-flex items-center gap-2 text-[10px] text-[#f5f0e8]/30 tracking-wider uppercase">
-              <span className="w-1 h-1 rounded-full bg-[#c42b2b]/40" />
-              Example / Placeholder
-            </div>
           </motion.div>
 
           {/* Info Grid Card */}
@@ -139,7 +135,6 @@ export default function Publication() {
 
             <div className="inline-flex items-center gap-2 text-[#f5f0e8]/50 text-sm tracking-wide mb-14">
               Expected: {bookConfig.publicationDisplay || 'December 2027'}
-              <span className="text-[10px] text-[#c42b2b]/50 tracking-wider uppercase ml-2">Placeholder</span>
             </div>
 
             <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mb-8">
@@ -169,10 +164,6 @@ export default function Publication() {
                 </div>
               ))}
             </div>
-
-            <p className="text-[10px] text-[#f5f0e8]/15 italic" style={{ fontFamily: '"Inter", sans-serif' }}>
-              * Placeholder publication date — countdown will update automatically
-            </p>
           </motion.div>
         </motion.div>
       </div>

@@ -193,7 +193,7 @@ export default function BurntLetterEasterEgg() {
                       className="group relative px-6 py-2 bg-[#261010] hover:bg-[#381414] border border-[#c42b2b]/40 hover:border-[#c42b2b] text-[#f5f0e8] text-xs uppercase tracking-[0.18em] transition-all flex items-center gap-2"
                       style={{ fontFamily: '"Inter", sans-serif' }}
                     >
-                      <span className="text-[#e63946] group-hover:scale-125 transition-transform">🔥</span>
+                      <span className="text-[#e63946] group-hover:scale-125 transition-transform">✦</span>
                       <span>Burn to Ashes</span>
                     </button>
                   </div>
@@ -201,7 +201,7 @@ export default function BurntLetterEasterEgg() {
               ) : (
                 /* Ash State */
                 <div className="text-center py-8">
-                  <div className="text-4xl mb-4 opacity-50">💨</div>
+                  <div className="text-4xl mb-4 opacity-50">∞</div>
                   <h4
                     className="text-xl sm:text-2xl text-[#f5f0e8] mb-3 italic"
                     style={{ fontFamily: '"Cormorant Garamond", serif' }}

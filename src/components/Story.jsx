@@ -235,12 +235,6 @@ const Story = () => {
                 </motion.div>
               </AnimatePresence>
             )}
-
-            <div className="mt-12 text-center">
-              <p className="text-[11px] text-white/25 italic" style={{ fontFamily: '"Inter", sans-serif' }}>
-                Placeholder story progression — editable in bookConfig.js
-              </p>
-            </div>
           </motion.div>
         </motion.div>
       </div>

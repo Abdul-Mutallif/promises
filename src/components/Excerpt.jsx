@@ -43,9 +43,6 @@ const Excerpt = () => {
             </span>
             
             <div className="relative z-10 text-center">
-              <span className="inline-block px-3 py-1 bg-white/[0.04] text-[#e8e0d4]/60 text-[10px] uppercase tracking-widest mb-8 rounded-full border border-white/[0.06]" style={{ fontFamily: '"Inter", sans-serif' }}>
-                Sample Excerpt
-              </span>
               
               <p
                 className="italic text-xl md:text-2xl leading-relaxed text-[#e8e0d4]/90 mb-8 max-w-2xl mx-auto"

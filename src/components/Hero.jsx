@@ -11,6 +11,13 @@ const Hero = () => {
     const ctx = canvas.getContext('2d');
     let animationFrameId;
 
+    const isVisibleRef = { current: true };
+    const section = canvas.closest('section');
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisibleRef.current = entry.isIntersecting;
+    });
+    if (section) observer.observe(section);
+
     const resizeCanvas = () => {
       const dpr = window.devicePixelRatio || 1;
       canvas.width = window.innerWidth * dpr;
@@ -45,49 +52,51 @@ const Hero = () => {
 
     let frame = 0;
     const render = () => {
-      frame++;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (isVisibleRef.current) {
+        frame++;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      particles.forEach((p) => {
-        // Natural swaying motion
-        const sway = Math.sin(frame * p.swaySpeed + p.swayOffset) * 0.4;
-        p.x += p.vx + sway;
-        p.y += p.vy;
-        p.angle += p.vAngle;
+        particles.forEach((p) => {
+          // Natural swaying motion
+          const sway = Math.sin(frame * p.swaySpeed + p.swayOffset) * 0.4;
+          p.x += p.vx + sway;
+          p.y += p.vy;
+          p.angle += p.vAngle;
 
-        if (p.x < -10) p.x = canvas.width + 10;
-        if (p.x > canvas.width + 10) p.x = -10;
-        if (p.y < -10) p.y = canvas.height + 10;
-        if (p.y > canvas.height + 10) p.y = -10;
+          if (p.x < -10) p.x = canvas.width + 10;
+          if (p.x > canvas.width + 10) p.x = -10;
+          if (p.y < -10) p.y = canvas.height + 10;
+          if (p.y > canvas.height + 10) p.y = -10;
 
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.angle);
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.angle);
 
-        if (p.type === 'flake') {
-          // Floating paper fragment
-          ctx.fillStyle = `rgba(232, 224, 212, ${p.opacity * 0.7})`;
-          ctx.fillRect(-p.size / 2, -p.size * 0.8, p.size, p.size * 1.6);
-        } else if (p.type === 'ember') {
-          // Warm crimson ember with glow
-          const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size * 2);
-          gradient.addColorStop(0, `rgba(230, 57, 70, ${p.opacity})`);
-          gradient.addColorStop(0.5, `rgba(196, 43, 43, ${p.opacity * 0.5})`);
-          gradient.addColorStop(1, 'rgba(196, 43, 43, 0)');
-          ctx.fillStyle = gradient;
-          ctx.beginPath();
-          ctx.arc(0, 0, p.size * 2, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          // Classic atmospheric dust
-          ctx.fillStyle = `rgba(245, 240, 232, ${p.opacity * 0.5})`;
-          ctx.beginPath();
-          ctx.arc(0, 0, p.size, 0, Math.PI * 2);
-          ctx.fill();
-        }
+          if (p.type === 'flake') {
+            // Floating paper fragment
+            ctx.fillStyle = `rgba(232, 224, 212, ${p.opacity * 0.7})`;
+            ctx.fillRect(-p.size / 2, -p.size * 0.8, p.size, p.size * 1.6);
+          } else if (p.type === 'ember') {
+            // Warm crimson ember with glow
+            const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size * 2);
+            gradient.addColorStop(0, `rgba(230, 57, 70, ${p.opacity})`);
+            gradient.addColorStop(0.5, `rgba(196, 43, 43, ${p.opacity * 0.5})`);
+            gradient.addColorStop(1, 'rgba(196, 43, 43, 0)');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(0, 0, p.size * 2, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // Classic atmospheric dust
+            ctx.fillStyle = `rgba(245, 240, 232, ${p.opacity * 0.5})`;
+            ctx.beginPath();
+            ctx.arc(0, 0, p.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
 
-        ctx.restore();
-      });
+          ctx.restore();
+        });
+      }
 
       animationFrameId = requestAnimationFrame(render);
     };
@@ -99,6 +108,7 @@ const Hero = () => {
     return () => {
       window.removeEventListener('resize', resizeCanvas);
       cancelAnimationFrame(animationFrameId);
+      if (section) observer.disconnect();
     };
   }, []);
 
@@ -167,7 +177,7 @@ const Hero = () => {
             className="leading-[0.95] select-none"
             style={{
               fontFamily: '"Great Vibes", cursive',
-              fontSize: 'clamp(5.5rem, 14vw, 11rem)',
+              fontSize: 'clamp(3.5rem, 12vw, 11rem)',
               color: '#c42b2b',
               textShadow: '0 0 70px rgba(196, 43, 43, 0.3), 0 4px 20px rgba(0,0,0,0.6)',
               paddingBottom: '0.05em',
