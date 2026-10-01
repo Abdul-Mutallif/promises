@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import bookConfig from '../data/bookConfig';
+import authorPhoto from '../assets/author.png';
 
 export default function Author() {
   const ref = useRef(null);
@@ -37,22 +38,31 @@ export default function Author() {
         >
           {/* Left Column: Portrait Frame */}
           <motion.div variants={itemVariants} className="w-full md:w-5/12">
-            <div className="relative aspect-[3/4] w-full max-w-sm mx-auto">
-              <div className="absolute inset-0 bg-gradient-to-tr from-[#c42b2b]/15 to-transparent blur-2xl rounded-sm"></div>
-              <div className="relative h-full w-full bg-[#141212] border border-[#f5f0e8]/[0.08] rounded-sm flex flex-col items-center justify-center p-8 text-center overflow-hidden shadow-2xl">
-                {/* Initial Monogram */}
-                <div
-                  className="text-6xl text-[#f5f0e8]/15 mb-6 select-none"
-                  style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 300 }}
-                  aria-hidden="true"
-                >
-                  {bookConfig?.author ? bookConfig.author.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'AM'}
+            <div className="relative aspect-[3/4] w-full max-w-sm mx-auto group">
+              {/* Ambient Crimson Glow behind portrait */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#c42b2b]/20 via-transparent to-transparent blur-2xl rounded-sm transition-opacity duration-500 group-hover:opacity-100" />
+              
+              <div className="relative h-full w-full bg-[#141212] border border-[#f5f0e8]/[0.08] rounded-sm overflow-hidden shadow-2xl">
+                {/* Author Photograph */}
+                <img
+                  src={authorPhoto}
+                  alt={bookConfig?.author || 'Abdul Mutallif'}
+                  className="w-full h-full object-cover object-center filter grayscale contrast-[1.05] brightness-95 transition-all duration-700 group-hover:scale-105 group-hover:contrast-110"
+                  loading="lazy"
+                />
+
+                {/* Subtle vignette overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/80 via-transparent to-black/20 pointer-events-none" />
+
+                {/* Subtle Crimson Accent Border line */}
+                <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#c42b2b]/60 to-transparent" />
+                <div className="absolute inset-0 border border-[#c42b2b]/15 pointer-events-none rounded-sm transition-colors duration-500 group-hover:border-[#c42b2b]/40" />
+
+                {/* Bottom author title tag overlay */}
+                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[10px] tracking-[0.2em] uppercase text-[#f5f0e8]/70 backdrop-blur-sm bg-black/50 px-3.5 py-1.5 rounded-sm border border-white/5 pointer-events-none">
+                  <span style={{ fontFamily: '"Inter", sans-serif' }}>{bookConfig?.author || 'Abdul Mutallif'}</span>
+                  <span className="text-[#c42b2b]">Author</span>
                 </div>
-                <div className="w-8 h-[1px] bg-[#c42b2b]/40 mb-4" />
-                <p className="text-[11px] tracking-[0.2em] text-[#f5f0e8]/40 uppercase" style={{ fontFamily: '"Inter", sans-serif' }}>
-                  Author portrait coming soon
-                </p>
-                <div className="absolute inset-0 border border-[#c42b2b]/10 pointer-events-none rounded-sm"></div>
               </div>
             </div>
           </motion.div>
