@@ -10,17 +10,19 @@ import UnopenedLetter from './components/UnopenedLetter'
 import Publication from './components/Publication'
 import BookDetails from './components/BookDetails'
 import Quotes from './components/Quotes'
-import PromiseWall from './components/PromiseWall'
 import Excerpt from './components/Excerpt'
 import CTA from './components/CTA'
 import Newsletter from './components/Newsletter'
 import BurntLetterEasterEgg from './components/BurntLetterEasterEgg'
 import Footer from './components/Footer'
 import CursorAtmosphere from './components/CursorAtmosphere'
+import AshEngine from './components/AshEngine'
+import LetGoBurner from './components/LetGoBurner'
 
 function App() {
   return (
     <>
+      <AshEngine />
       {/* Ambient cursor spotlight effect */}
       <CursorAtmosphere />
 
@@ -32,19 +34,34 @@ function App() {
 
       {/* Main Content */}
       <main>
+        {/* 1. The Hook */}
         <Hero />
-        <BookCover />
+        
+        {/* 2. The Premise */}
         <AboutBook />
-        <Story />
+        <BookCover />
+        
+        {/* 3. The Characters & Journey */}
         <TwoPerspectives />
+        <Story />
+        
+        {/* 4. Interactive Immersion */}
+        <Quotes />
+        <Excerpt />
+        <UnopenedLetter />
+        
+        {/* 5. Emotional Climax */}
+        <LetGoBurner />
+        
+        {/* 6. The Creator */}
         <AuthorDedication />
         <Author />
-        <UnopenedLetter />
-        <Publication />
+        
+        {/* 7. The Details */}
         <BookDetails />
-        <Quotes />
-        <PromiseWall />
-        <Excerpt />
+        <Publication />
+        
+        {/* 8. Conversion */}
         <CTA />
         <Newsletter />
         <BurntLetterEasterEgg />

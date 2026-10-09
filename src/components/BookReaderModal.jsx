@@ -1,21 +1,79 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import HTMLFlipBook from 'react-pageflip';
 import bookConfig from '../data/bookConfig';
 
+// A single page component for the flipbook
+const Page = React.forwardRef((props, ref) => {
+  const { page, number, total } = props;
+  return (
+    <div className="demoPage overflow-hidden bg-[#f5f0e8]" ref={ref}>
+      <div className="w-full h-full relative text-[#1a1a1a] shadow-inner">
+        {/* Background paper texture */}
+        <div 
+          className="absolute inset-0 opacity-[0.85] pointer-events-none"
+          style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}
+        />
+        
+        {/* Page Content - Padding goes here! */}
+        <div className="p-6 md:p-10 h-full flex flex-col relative z-10">
+          <div className="mb-6 text-center border-b border-black/10 pb-4 mt-4">
+            <span className="text-[10px] uppercase tracking-[0.2em] text-[#c42b2b] font-medium" style={{ fontFamily: '"Inter", sans-serif' }}>
+              {page.chapter}
+            </span>
+            <h3
+              className="text-xl sm:text-2xl mt-2"
+              style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 600 }}
+            >
+              {page.title}
+            </h3>
+          </div>
+
+          <div className="space-y-4 flex-1 overflow-hidden">
+            {page.text.map((para, i) => (
+              <p
+                key={i}
+                className={`text-sm sm:text-base leading-relaxed text-[#1a1a1a]/90 ${
+                  i === 0 ? 'first-letter:text-3xl first-letter:font-serif first-letter:text-[#c42b2b] first-letter:mr-1 first-letter:float-left first-letter:leading-none' : ''
+                }`}
+                style={{
+                  fontFamily: '"Cormorant Garamond", serif',
+                  lineHeight: '1.7',
+                }}
+              >
+                {para}
+              </p>
+            ))}
+          </div>
+
+          {/* Page Footer */}
+          <div className="mt-4 text-center border-t border-black/10 pt-4 mb-2">
+            <span className="text-xs tracking-[0.2em] uppercase text-black/40" style={{ fontFamily: '"Inter", sans-serif' }}>
+              {number}
+            </span>
+          </div>
+        </div>
+        
+        {/* Page drop shadow for 3D effect */}
+        <div className="absolute top-0 bottom-0 right-0 w-8 bg-gradient-to-l from-black/10 to-transparent pointer-events-none" />
+      </div>
+    </div>
+  );
+});
+
 export default function BookReaderModal({ isOpen, onClose }) {
-  const [currentPage, setCurrentPage] = useState(0);
   const pages = bookConfig.previewPages || [];
-  const activePage = pages[currentPage];
+  const bookRef = useRef();
 
   // Close on ESC key
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowRight' && currentPage < pages.length - 1) {
-        setCurrentPage((prev) => prev + 1);
+      if (e.key === 'ArrowRight' && bookRef.current) {
+        bookRef.current.pageFlip().turnNext();
       }
-      if (e.key === 'ArrowLeft' && currentPage > 0) {
-        setCurrentPage((prev) => prev - 1);
+      if (e.key === 'ArrowLeft' && bookRef.current) {
+        bookRef.current.pageFlip().turnPrev();
       }
     };
 
@@ -30,11 +88,11 @@ export default function BookReaderModal({ isOpen, onClose }) {
       document.body.style.overflow = '';
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, currentPage, pages.length, onClose]);
+  }, [isOpen, onClose]);
 
   return (
     <AnimatePresence>
-      {isOpen && pages.length > 0 && activePage && (
+      {isOpen && pages.length > 0 && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10">
           {/* Backdrop */}
           <motion.div
@@ -42,124 +100,74 @@ export default function BookReaderModal({ isOpen, onClose }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-[#0a0a0a]/90 backdrop-blur-md"
+            className="absolute inset-0 bg-[#0a0a0a]/95 backdrop-blur-md"
           />
 
-          {/* Modal Book Container */}
+          {/* Modal Container */}
           <motion.div
             role="dialog"
             aria-modal="true"
             aria-label="Book Excerpt Reader"
-            initial={{ opacity: 0, scale: 0.92, y: 30 }}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.92, y: 30 }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="relative z-10 w-full max-w-2xl bg-[#141212] border border-[#f5f0e8]/10 rounded-sm shadow-[0_30px_100px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col max-h-[90vh]"
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="relative z-10 w-full max-w-5xl flex flex-col items-center"
           >
-            {/* Subtle top red accent line */}
-            <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#c42b2b] to-transparent" />
-
-            {/* Header */}
-            <div className="px-6 sm:px-8 py-5 border-b border-[#f5f0e8]/[0.06] flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-[#c42b2b] font-medium" style={{ fontFamily: '"Inter", sans-serif' }}>
-                  Preview Excerpt
-                </span>
-                <span className="text-white/20">•</span>
-                <span className="text-xs uppercase tracking-wider text-[#e8e0d4]/50" style={{ fontFamily: '"Cormorant Garamond", serif' }}>
-                  {activePage.chapter}
-                </span>
-              </div>
-
+            {/* Close Button */}
+            <div className="w-full flex justify-end mb-4">
               <button
                 onClick={onClose}
-                className="text-[#f5f0e8]/50 hover:text-[#f5f0e8] transition-colors p-1.5 rounded-full hover:bg-white/5"
-                aria-label="Close reader"
+                className="text-white/60 hover:text-white transition-colors flex items-center gap-2 uppercase tracking-widest text-xs"
+                style={{ fontFamily: '"Inter", sans-serif' }}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                <span>Close Book</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
             </div>
 
-            {/* Page Content */}
-            <div className="p-8 sm:p-12 overflow-y-auto flex-1 select-text">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentPage}
-                  initial={{ opacity: 0, x: 15 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -15 }}
-                  transition={{ duration: 0.35, ease: "easeOut" }}
-                  className="max-w-xl mx-auto"
-                >
-                  {/* Title */}
-                  <h3
-                    className="text-2xl sm:text-3xl text-[#f5f0e8] mb-8 text-center"
-                    style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 400 }}
-                  >
-                    {activePage.title}
-                  </h3>
+            {/* The 3D Book */}
+            <div className="shadow-[0_40px_100px_rgba(0,0,0,0.9)] border-4 border-[#141212] rounded-md bg-[#141212]">
+              <HTMLFlipBook
+                width={400}
+                height={600}
+                size="stretch"
+                minWidth={300}
+                maxWidth={450}
+                minHeight={400}
+                maxHeight={650}
+                maxShadowOpacity={0.5}
+                showCover={false}
+                mobileScrollSupport={true}
+                className="book-flip"
+                ref={bookRef}
+                flippingTime={1000}
+                usePortrait={false}
+              >
+                {/* Inner Pages */}
+                {pages.map((page, i) => (
+                  <Page key={i} page={page} number={i + 1} total={pages.length} />
+                ))}
 
-                  {/* Paragraphs */}
-                  <div className="space-y-6">
-                    {activePage.text.map((para, i) => (
-                      <p
-                        key={i}
-                        className={`text-base sm:text-lg leading-relaxed text-[#e8e0d4]/80 ${
-                          i === 0 ? 'first-letter:text-4xl first-letter:font-serif first-letter:text-[#c42b2b] first-letter:mr-2 first-letter:float-left first-letter:leading-none' : ''
-                        }`}
-                        style={{
-                          fontFamily: '"Cormorant Garamond", serif',
-                          fontSize: '1.2rem',
-                          lineHeight: '1.85',
-                        }}
-                      >
-                        {para}
-                      </p>
-                    ))}
+                {/* Back Cover / End Page to balance the spread */}
+                <div className="demoPage overflow-hidden bg-[#0a0a0a]">
+                  <div className="w-full h-full flex items-center justify-center border-l border-white/5 relative">
+                     <div className="absolute inset-0 bg-gradient-to-bl from-[#1a1a1a] to-black opacity-50" />
+                     <div className="text-center relative z-10">
+                       <div className="text-[#c42b2b] text-4xl mb-4">♦</div>
+                       <p className="text-white/40 tracking-widest text-xs uppercase" style={{ fontFamily: '"Inter", sans-serif' }}>End of Preview</p>
+                     </div>
                   </div>
-                </motion.div>
-              </AnimatePresence>
+                </div>
+              </HTMLFlipBook>
             </div>
-
-            {/* Footer / Page Navigation */}
-            <div className="px-6 sm:px-8 py-4 border-t border-[#f5f0e8]/[0.06] bg-[#0f0e0e] flex items-center justify-between">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
-                disabled={currentPage === 0}
-                className={`flex items-center gap-2 text-xs uppercase tracking-[0.15em] transition-all ${
-                  currentPage === 0
-                    ? 'opacity-30 cursor-not-allowed text-[#f5f0e8]'
-                    : 'text-[#f5f0e8] hover:text-[#c42b2b]'
-                }`}
-                style={{ fontFamily: '"Inter", sans-serif' }}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-                  <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span>Previous</span>
-              </button>
-
-              <span className="text-xs tracking-[0.2em] uppercase text-[#e8e0d4]/40" style={{ fontFamily: '"Inter", sans-serif' }}>
-                Page {activePage.pageNumber} of {String(pages.length).padStart(2, '0')}
-              </span>
-
-              <button
-                onClick={() => setCurrentPage((p) => Math.min(pages.length - 1, p + 1))}
-                disabled={currentPage === pages.length - 1}
-                className={`flex items-center gap-2 text-xs uppercase tracking-[0.15em] transition-all ${
-                  currentPage === pages.length - 1
-                    ? 'opacity-30 cursor-not-allowed text-[#f5f0e8]'
-                    : 'text-[#f5f0e8] hover:text-[#c42b2b]'
-                }`}
-                style={{ fontFamily: '"Inter", sans-serif' }}
-              >
-                <span>Next</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-                  <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
+            
+            <div className="mt-8 text-center">
+               <p className="text-white/40 text-xs tracking-widest uppercase font-sans">
+                  Click and drag corners to flip pages • Use arrow keys
+               </p>
             </div>
           </motion.div>
         </div>
