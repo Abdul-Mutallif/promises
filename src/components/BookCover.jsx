@@ -7,6 +7,7 @@ const BookCover = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [isReaderOpen, setIsReaderOpen] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
 
   // Mouse tilt animation physics
   const bookBoxRef = useRef(null);
@@ -35,6 +36,7 @@ const BookCover = () => {
   const handleMouseLeave = () => {
     mouseX.set(0);
     mouseY.set(0);
+    setIsFlipped(false);
   };
 
   const containerVariants = {
@@ -64,6 +66,7 @@ const BookCover = () => {
               aria-label="Open book preview reader"
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
+              onMouseEnter={() => setIsFlipped(true)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
@@ -72,7 +75,11 @@ const BookCover = () => {
               }}
               className="flex flex-col justify-center items-center cursor-pointer group focus:outline-none focus-visible:ring-1 focus-visible:ring-[#c42b2b]"
               style={{ perspective: "1200px" }}
-              onClick={() => setIsReaderOpen(true)}
+              onClick={() => {
+                // If it's a touch device, click might toggle flip first or open reader
+                if (!isFlipped) setIsFlipped(true);
+                else setIsReaderOpen(true);
+              }}
             >
               <motion.div
                 initial={{ y: -6 }}
@@ -93,62 +100,103 @@ const BookCover = () => {
                 {/* Dynamic Shadow */}
                 <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-4/5 h-8 bg-[#c42b2b]/15 blur-2xl rounded-full transition-opacity group-hover:opacity-100" />
                 
-                {/* Book Front Cover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#1c1b1b] via-[#141313] to-[#0c0c0c] rounded-r-md rounded-l-sm shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/[0.06] overflow-hidden flex flex-col justify-between p-8 select-none">
-                  {/* Red accent line at top */}
-                  <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#c42b2b] to-transparent opacity-80" />
-                  
-                  {/* Dynamic Sheen / Foil Glare */}
-                  <motion.div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background: 'linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.18) 50%, transparent 65%)',
-                      opacity: glareOpacity,
-                      x: glareX,
-                    }}
-                  />
-
-                  {/* Inner border frame */}
-                  <div className="absolute inset-5 border border-[rgba(245,240,232,0.06)] pointer-events-none" />
-
-                  {/* Title area */}
-                  <div className="mt-12 text-center relative z-10">
-                    <h2
-                      className="mb-4 leading-none"
-                      style={{
-                        fontFamily: '"Great Vibes", cursive',
-                        fontSize: 'clamp(3rem, 8.5vw, 3.8rem)',
-                        color: '#c42b2b',
-                        textShadow: '0 0 35px rgba(196, 43, 43, 0.3)',
-                      }}
-                    >
-                      {bookConfig?.title || 'Promises'}
-                    </h2>
-                    <p
-                      className="tracking-[0.14em] uppercase"
-                      style={{
-                        fontFamily: '"Cormorant Garamond", serif',
-                        fontSize: '0.85rem',
-                        color: '#e8e0d4',
-                        fontWeight: 300,
-                        letterSpacing: '0.18em',
-                      }}
-                    >
-                      {bookConfig?.subtitle || 'The Tale of a Foolish Boy'}
+                {/* Book Base (Next Page revealed underneath) */}
+                <div className="absolute inset-0 bg-[#0c0c0c] rounded-r-md rounded-l-sm shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-white/[0.06] overflow-hidden flex flex-col items-center justify-center p-8 select-none">
+                  <div className="w-full h-full border border-white/[0.03] flex items-center justify-center">
+                    <p className="text-[#e8e0d4]/20 text-sm uppercase tracking-widest" style={{ fontFamily: '"Inter", sans-serif' }}>
+                      Prologue
                     </p>
                   </div>
-
-                  {/* Author at bottom */}
-                  <div className="mb-2 text-center relative z-10">
-                    <div className="w-8 h-[1px] bg-[#c42b2b]/40 mx-auto mb-4" />
-                    <p className="text-[10px] tracking-[0.25em] uppercase text-[#e8e0d4]/45" style={{ fontFamily: '"Inter", sans-serif' }}>
-                      {bookConfig?.author || 'Abdul Mutallif'}
-                    </p>
-                  </div>
-                  
-                  {/* Spine effect */}
-                  <div className="absolute left-0 top-0 bottom-0 w-5 bg-gradient-to-r from-black/80 to-transparent" />
+                  {/* Spine effect base */}
+                  <div className="absolute left-0 top-0 bottom-0 w-5 bg-gradient-to-r from-black/90 to-transparent z-20 pointer-events-none" />
                 </div>
+
+                {/* Animated Page Flip (Contains Cover Content) */}
+                <motion.div
+                  className="absolute inset-0 origin-left z-10"
+                  style={{ transformStyle: "preserve-3d" }}
+                  initial={false}
+                  animate={{ rotateY: isFlipped ? -160 : 0 }}
+                  transition={{ duration: 0.7, ease: "easeInOut" }}
+                >
+                  {/* Front Face: Book Front Cover */}
+                  <div 
+                    className="absolute inset-0 bg-gradient-to-br from-[#1f1f1f] via-[#141313] to-[#0c0c0c] rounded-r-md rounded-l-sm overflow-hidden flex flex-col justify-between p-8 select-none"
+                    style={{ backfaceVisibility: "hidden" }}
+                  >
+                    {/* Shadow during flip */}
+                    <motion.div 
+                      className="absolute inset-0 bg-black pointer-events-none z-50"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: isFlipped ? 0.3 : 0 }}
+                      transition={{ duration: 0.7 }}
+                    />
+                    
+                    {/* Red accent line at top */}
+                    <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#c42b2b] to-transparent opacity-80" />
+                    
+                    {/* Dynamic Sheen / Foil Glare */}
+                    <motion.div
+                      className="absolute inset-0 pointer-events-none"
+                      style={{
+                        background: 'linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.18) 50%, transparent 65%)',
+                        opacity: glareOpacity,
+                        x: glareX,
+                      }}
+                    />
+
+                    {/* Inner border frame */}
+                    <div className="absolute inset-5 border border-[rgba(245,240,232,0.06)] pointer-events-none" />
+
+                    {/* Title area */}
+                    <div className="mt-12 text-center relative z-10">
+                      <h2
+                        className="mb-4 leading-none"
+                        style={{
+                          fontFamily: '"Great Vibes", cursive',
+                          fontSize: 'clamp(3rem, 8.5vw, 3.8rem)',
+                          color: '#c42b2b',
+                          textShadow: '0 0 35px rgba(196, 43, 43, 0.3)',
+                        }}
+                      >
+                        {bookConfig?.title || 'Promises'}
+                      </h2>
+                      <p
+                        className="tracking-[0.14em] uppercase"
+                        style={{
+                          fontFamily: '"Cormorant Garamond", serif',
+                          fontSize: '0.85rem',
+                          color: '#e8e0d4',
+                          fontWeight: 300,
+                          letterSpacing: '0.18em',
+                        }}
+                      >
+                        {bookConfig?.subtitle || 'The Tale of a Foolish Boy'}
+                      </p>
+                    </div>
+
+                    {/* Author at bottom */}
+                    <div className="mb-2 text-center relative z-10">
+                      <div className="w-8 h-[1px] bg-[#c42b2b]/40 mx-auto mb-4" />
+                      <p className="text-[10px] tracking-[0.25em] uppercase text-[#e8e0d4]/45" style={{ fontFamily: '"Inter", sans-serif' }}>
+                        {bookConfig?.author || 'Abdul Mutallif'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Back Face: Inside of the cover (texture) */}
+                  <div 
+                    className="absolute inset-0 bg-[#111] rounded-l-md rounded-r-sm overflow-hidden"
+                    style={{ 
+                      backfaceVisibility: "hidden", 
+                      transform: "rotateY(180deg)",
+                      backgroundImage: "radial-gradient(circle at center, rgba(245,240,232,0.05) 0%, transparent 100%)"
+                    }}
+                  >
+                    <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-black/60 to-transparent pointer-events-none" />
+                  </div>
+                </motion.div>
+                
               </motion.div>
 
               {/* Interactive Peek Inside Hint Button */}

@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
-import bookConfig from '../data/bookConfig';
 
 const perspectives = {
   boy: {

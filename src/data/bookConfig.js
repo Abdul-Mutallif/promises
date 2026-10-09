@@ -183,6 +183,7 @@ const bookConfig = {
     { label: "Story", href: "#story" },
     { label: "Author", href: "#author" },
     { label: "Publication", href: "#publication" },
+    { label: "Scrapbook", href: "/scrapbook" },
   ],
 
   // ─── Footer Links ───────────────────────────────────

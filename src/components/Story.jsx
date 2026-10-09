@@ -157,7 +157,7 @@ const Story = () => {
               </div>
             </div>
 
-            {/* Expanded Active Phase Card */}
+            {/* Expanded Active Phase Card (Scrapbook Spread) */}
             {activeBeat && (
               <AnimatePresence mode="wait">
                 <motion.div
@@ -169,52 +169,81 @@ const Story = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.35, ease: 'easeOut' }}
-                  className="max-w-3xl mx-auto bg-[#141212] border border-[#f5f0e8]/[0.08] p-6 sm:p-8 md:p-12 rounded-sm relative overflow-hidden shadow-2xl"
+                  className="max-w-4xl mx-auto bg-[#f5f0e8] text-[#1a1a1a] p-8 sm:p-10 md:p-14 rounded-sm relative shadow-[0_20px_50px_rgba(0,0,0,0.8)]"
+                  style={{
+                    backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")',
+                  }}
                 >
-                  <div className="absolute top-0 left-0 w-1.5 sm:w-2 h-full bg-[#c42b2b]" />
+                  <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center md:items-start relative">
+                    
+                    {/* Polaroid Photo */}
+                    <div className="relative flex-shrink-0 w-48 sm:w-56 -rotate-2 transform hover:rotate-0 transition-transform duration-500 z-10">
+                      {/* Washi Tape */}
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-white/50 backdrop-blur-sm rotate-3 z-20 shadow-sm" style={{ clipPath: 'polygon(5% 0%, 95% 2%, 100% 98%, 0% 100%)' }} />
+                      
+                      <div className="bg-white p-3 sm:p-4 pb-12 sm:pb-16 shadow-xl relative">
+                        <div className="bg-[#141212] aspect-square w-full flex items-center justify-center text-4xl sm:text-6xl text-[#c42b2b]">
+                          {activeBeat.icon}
+                        </div>
+                        <div className="absolute bottom-3 sm:bottom-4 left-0 w-full text-center">
+                          <span className="text-xs sm:text-sm uppercase tracking-widest text-black/60 font-medium" style={{ fontFamily: '"Inter", sans-serif' }}>
+                            {activeBeat.phase}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
 
-                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-2 mb-4 sm:mb-6">
-                    <span className="text-xs uppercase tracking-[0.2em] text-[#c42b2b] font-medium" style={{ fontFamily: '"Inter", sans-serif' }}>
-                      {activeBeat.phase} • {activeBeat.label}
-                    </span>
-                    <span className="text-xs sm:text-sm italic text-[#e8e0d4]/50" style={{ fontFamily: '"Cormorant Garamond", serif' }}>
-                      {activeBeat.subtitle}
-                    </span>
+                    {/* Right side: Scrapbook Details */}
+                    <div className="flex flex-col gap-6 w-full relative z-10">
+                      {/* Torn paper note for quote */}
+                      <div className="relative bg-white/60 p-6 md:p-8 shadow-md transform rotate-1">
+                        {/* Washi Tape */}
+                        <div className="absolute -top-3 -right-2 w-16 h-5 bg-[#c42b2b]/30 backdrop-blur-sm -rotate-6 z-20 shadow-sm" style={{ clipPath: 'polygon(0% 5%, 98% 0%, 100% 95%, 2% 100%)' }} />
+                        <div className="absolute -bottom-3 -left-2 w-16 h-5 bg-[#c42b2b]/30 backdrop-blur-sm -rotate-6 z-20 shadow-sm" style={{ clipPath: 'polygon(0% 5%, 98% 0%, 100% 95%, 2% 100%)' }} />
+                        
+                        <blockquote
+                          className="text-xl sm:text-2xl md:text-3xl text-[#1a1a1a] leading-relaxed"
+                          style={{ fontFamily: '"Great Vibes", cursive' }}
+                        >
+                          “{activeBeat.quote}”
+                        </blockquote>
+                        <div className="mt-4 text-right">
+                          <span className="text-xs uppercase tracking-widest text-[#c42b2b] font-bold font-sans">
+                            {activeBeat.label} • {activeBeat.subtitle}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Typewriter detail */}
+                      <div className="pl-2 border-l-2 border-black/10 mt-2">
+                        <p
+                          className="text-sm sm:text-base text-[#333] leading-relaxed"
+                          style={{ fontFamily: '"Courier New", Courier, monospace' }}
+                        >
+                          {activeBeat.detail}
+                        </p>
+                      </div>
+                    </div>
+
                   </div>
 
-                  {/* Scene Quote */}
-                  <blockquote
-                    className="text-lg sm:text-xl md:text-2xl text-[#f5f0e8] leading-relaxed mb-4 sm:mb-6 italic"
-                    style={{ fontFamily: '"Cormorant Garamond", serif' }}
-                  >
-                    “{activeBeat.quote}”
-                  </blockquote>
-
-                  {/* Detail */}
-                  <p
-                    className="text-xs sm:text-sm md:text-base text-[#e8e0d4]/65 leading-relaxed"
-                    style={{ fontFamily: '"Inter", sans-serif', fontWeight: 300 }}
-                  >
-                    {activeBeat.detail}
-                  </p>
-
-                  {/* Mobile & Desktop Stepper Navigation Footer */}
-                  <div className="flex items-center justify-between pt-5 mt-6 border-t border-white/[0.06]">
+                  {/* Navigation Stepper (Scrapbook styled) */}
+                  <div className="flex items-center justify-between pt-6 mt-10 border-t border-black/10 relative z-10">
                     <button
                       onClick={() => setSelectedBeatIndex(Math.max(0, selectedBeatIndex - 1))}
                       disabled={selectedBeatIndex === 0}
                       className={`flex items-center gap-1.5 text-xs uppercase tracking-[0.15em] transition-colors py-1 ${
                         selectedBeatIndex === 0
-                          ? 'opacity-20 cursor-not-allowed text-[#f5f0e8]'
-                          : 'text-[#e8e0d4]/70 hover:text-[#c42b2b]'
+                          ? 'opacity-30 cursor-not-allowed text-[#1a1a1a]'
+                          : 'text-[#1a1a1a] hover:text-[#c42b2b]'
                       }`}
-                      style={{ fontFamily: '"Inter", sans-serif' }}
+                      style={{ fontFamily: '"Inter", sans-serif', fontWeight: 600 }}
                     >
                       <span aria-hidden="true">←</span>
                       <span>Previous</span>
                     </button>
 
-                    <span className="text-[10px] tracking-[0.2em] uppercase text-[#e8e0d4]/30" style={{ fontFamily: '"Inter", sans-serif' }}>
+                    <span className="text-[10px] tracking-[0.2em] uppercase text-black/40 font-bold" style={{ fontFamily: '"Inter", sans-serif' }}>
                       Phase 0{selectedBeatIndex + 1} of 0{beats.length}
                     </span>
 
@@ -223,10 +252,10 @@ const Story = () => {
                       disabled={selectedBeatIndex === beats.length - 1}
                       className={`flex items-center gap-1.5 text-xs uppercase tracking-[0.15em] transition-colors py-1 ${
                         selectedBeatIndex === beats.length - 1
-                          ? 'opacity-20 cursor-not-allowed text-[#f5f0e8]'
-                          : 'text-[#e8e0d4]/70 hover:text-[#c42b2b]'
+                          ? 'opacity-30 cursor-not-allowed text-[#1a1a1a]'
+                          : 'text-[#1a1a1a] hover:text-[#c42b2b]'
                       }`}
-                      style={{ fontFamily: '"Inter", sans-serif' }}
+                      style={{ fontFamily: '"Inter", sans-serif', fontWeight: 600 }}
                     >
                       <span>Next</span>
                       <span aria-hidden="true">→</span>

@@ -21,7 +21,7 @@
   --color-red-title: #c42b2b;
   --color-red-bright: #e63946;
   --color-red-label: #d63b3b;
-  
+
   --font-heading: "Playfair Display", "Georgia", serif;
   --font-body: "Inter", "system-ui", sans-serif;
   --font-inter: "Inter", "system-ui", sans-serif;
@@ -45,7 +45,12 @@ body {
 }
 
 /* ─── Typography ────────────────────────────────────────── */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   font-weight: 400;
   letter-spacing: -0.02em;
@@ -55,13 +60,16 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--color-midnight);
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--color-slate-light);
   border-radius: 3px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-burgundy);
 }
@@ -116,14 +124,17 @@ h1, h2, h3, h4, h5, h6 {
 .book-3d {
   perspective: 1200px;
 }
+
 .book-3d-inner {
   transform: rotateY(-12deg) rotateX(2deg);
   transform-style: preserve-3d;
   transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
+
 .book-3d:hover .book-3d-inner {
   transform: rotateY(-6deg) rotateX(1deg);
 }
+
 .book-spine {
   position: absolute;
   left: 0;
@@ -138,6 +149,7 @@ h1, h2, h3, h4, h5, h6 {
 .animated-underline {
   position: relative;
 }
+
 .animated-underline::after {
   content: '';
   position: absolute;
@@ -148,6 +160,7 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--color-burgundy);
   transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
+
 .animated-underline:hover::after {
   width: 100%;
 }

@@ -3,6 +3,8 @@ import { motion, useInView, AnimatePresence } from 'framer-motion';
 import bookConfig from '../data/bookConfig';
 import QuoteShareModal from './QuoteShareModal';
 
+const quotes = bookConfig.quotes || [];
+
 export default function Quotes() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -10,17 +12,42 @@ export default function Quotes() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [copied, setCopied] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const quotes = bookConfig.quotes || [];
   
+  const [displayedText, setDisplayedText] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  
+  // Typewriter effect
   useEffect(() => {
-    if (quotes.length <= 1) return;
+    if (quotes.length === 0) return;
+    
+    setIsTyping(true);
+    setDisplayedText('');
+    
+    const fullText = quotes[currentIndex];
+    let i = 0;
+    
+    const typingInterval = setInterval(() => {
+      setDisplayedText(fullText.substring(0, i + 1));
+      i++;
+      if (i >= fullText.length) {
+        clearInterval(typingInterval);
+        setIsTyping(false);
+      }
+    }, 35);
+    
+    return () => clearInterval(typingInterval);
+  }, [currentIndex]);
+  
+  // Auto-rotation timer (only advances after typing completes)
+  useEffect(() => {
+    if (quotes.length <= 1 || isTyping) return;
     
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % quotes.length);
-    }, 7000);
+    }, 6000);
     
     return () => clearInterval(interval);
-  }, [quotes.length, currentIndex]);
+  }, [isTyping]);
 
   const handleCopyQuote = async () => {
     if (quotes.length === 0) return;
@@ -77,7 +104,10 @@ export default function Quotes() {
                     className="text-2xl sm:text-3xl md:text-4xl text-center max-w-3xl leading-relaxed mb-6 text-[#f5f0e8]/95"
                     style={{ fontFamily: '"Cormorant Garamond", serif', fontStyle: 'italic', fontWeight: 300 }}
                   >
-                    “{quotes[currentIndex]}”
+                    “{displayedText}
+                    {isTyping && (
+                      <span className="animate-pulse text-[#c42b2b] ml-[2px] inline-block font-sans font-light">|</span>
+                    )}”
                   </blockquote>
                   <cite className="text-[#f5f0e8]/40 text-xs tracking-wider not-italic" style={{ fontFamily: '"Inter", sans-serif' }}>
                     — from <span className="text-[#e8e0d4]/65">{bookConfig.fullTitle}</span>
